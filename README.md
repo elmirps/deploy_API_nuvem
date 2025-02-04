@@ -1,4 +1,4 @@
-# Deploy de API na Nuvem com Azure DevOps
+# Deploy de API na Nuvem na Prática
 
 Este repositório contém um projeto que demonstra o **deploy de uma API na nuvem** utilizando **Azure DevOps** com um **agente self-hosted**. O objetivo é mostrar como automatizar a implantação de uma aplicação utilizando **pipelines personalizados**.
 
