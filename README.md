@@ -1,39 +1,35 @@
-# Deploy de API na Nuvem na Prática
+# Deploy de API na Nuvem com Azure DevOps
 
-Este repositório contém um projeto que demonstra o **deploy de uma API na nuvem** utilizando **Azure DevOps** com um **agente self-hosted**. O objetivo é mostrar como automatizar a implantação de uma aplicação utilizando **pipelines personalizados**.
+Este repositório contém um projeto que demonstra o **deploy de uma API na nuvem** utilizando **Azure DevOps** com um **web hook**. O objetivo é mostrar como automatizar a implantação de uma aplicação utilizando **pipelines personalizados**.
 
 ## 📌 Tecnologias Utilizadas
 
 - **Linguagem**: C#/.NET 8.0
-- **Azure DevOps**: Para versionamento, **CI/CD** e gerenciamento de pipeline.
+- **Azure DevOps**: Para **versionamento** e **gerenciamento de pipeline**.
 - **Azure Web App**: Hospedagem da API na nuvem.
-- **Agente Self-Hosted**: Para execução de jobs no pipeline sem a necessidade de um agente gerenciado.
+- **Web hook**: Para execução de **jobs** no pipeline sem necessidade de agente gerenciado.
 
 ## 🚀 Passos para Implantação
 
-### 1. **Configuração do Agente Self-Hosted no Azure DevOps**
+### 1. **Configuração do Web Hook**
 
-- No Azure DevOps, acesse o menu **Agent pools**.
-- Crie um novo **pool de agentes** ou selecione um existente.
-- Baixe e instale o **agente self-hosted** na máquina onde o agente será executado.
-- Configure o agente utilizando o comando de configuração fornecido após o download.
+1. No **Azure DevOps**, acesse o projeto e configure um **web hook** para se conectar aos eventos do pipeline.
+2. Defina um **endpoint** onde o web hook irá enviar notificações quando um evento de build ou release for disparado.
 
 ### 2. **Criação do Pipeline no Azure DevOps**
 
-1. No Azure DevOps, crie um novo pipeline.
+1. Crie um novo **pipeline** no Azure DevOps.
 2. Selecione o repositório onde está armazenado o código da API.
-3. Defina o pipeline YAML ou utilize o assistente de configuração para criar um pipeline.
+3. Utilize **YAML** ou o assistente de configuração para criar o pipeline.
 
-Exemplo de pipeline YAML:
+Exemplo de pipeline YAML com **web hook**:
 
 ```yaml
 trigger:
 - main
 
 pool:
-  name: Default
-  demands:
-    - agent.name -equals <nome-do-agente-self-hosted>
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -53,6 +49,11 @@ jobs:
       azureSubscription: '<nome-da-subscrição-azure>'
       appName: '<nome-da-sua-api>'
       package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+  - task: WebHook@2
+    inputs:
+      url: '<seu-endpoint-webhook>'
+      method: 'POST'
+      data: '{"status": "completed"}'
 
 
 ### 3. **Configuração do Azure Web App**
